@@ -21,8 +21,10 @@ async fn main() {
         let stdin = tokio::io::stdin();
         let stdout = tokio::io::stdout();
 
-        let (service, socket) = LspService::new(|client| Backend { client });
-
+        let (service, socket) = LspService::new(|client| Backend {
+            client,
+            document_map: dashmap::DashMap::new(),
+        });
         Server::new(stdin, stdout, socket).serve(service).await;
     } else {
         println!("Please use --start to run the LSP server, or --help for more information.");
