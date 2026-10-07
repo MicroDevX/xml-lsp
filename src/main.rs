@@ -1,6 +1,12 @@
 use clap::Parser;
 use tower_lsp::{LspService, Server};
 
+pub mod features;
+pub mod server;
+pub mod xml;
+
+use crate::server::Backend;
+
 #[derive(Parser, Debug)]
 #[command(
     name = "xml-lsp",
@@ -15,7 +21,7 @@ struct Args {
 
 #[tokio::main]
 async fn main() {
-    let args = Args::parse;
+    let args = Args::parse();
 
     if args.start {
         let stdin = tokio::io::stdin();
@@ -25,6 +31,7 @@ async fn main() {
             client,
             document_map: dashmap::DashMap::new(),
         });
+
         Server::new(stdin, stdout, socket).serve(service).await;
     } else {
         println!("Please use --start to run the LSP server, or --help for more information.");
