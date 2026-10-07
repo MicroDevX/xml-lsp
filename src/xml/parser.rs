@@ -65,3 +65,30 @@ fn create_lsp_range(pos: TextPos) -> Range {
 
     Range::new(start, end)
 }
+
+// testing
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_valid_xml() {
+        let xml = "<root><child id=\"1\"/></root>";
+        let result = parse_xml(xml);
+        assert!(result.document.is_some());
+        assert!(result.diagnostics.is_empty());
+    }
+
+    #[test]
+    fn test_invalid_xml_missing_close_tag() {
+        let xml = "<root><child id=\"1\"></root>";
+        let result = parse_xml(xml);
+        assert!(result.document.is_none());
+        assert_eq!(result.diagnostics.len(), 1);
+
+        let diag = &result.diagnostics[0];
+        assert_eq!(diag.severity, Some(DiagnosticSeverity::ERROR));
+        assert!(diag.message.contains("Unexpected close tag"));
+        assert_eq!(diag.range.start.line, 0);
+    }
+}
