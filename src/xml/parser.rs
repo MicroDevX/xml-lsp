@@ -54,3 +54,14 @@ fn build_diagnostic(err: XmlError) -> Diagnostic {
         data: None,
     }
 }
+
+fn create_lsp_range(pos: TextPos) -> Range {
+    let line = if pos.row > 0 { pos.row - 1 } else { 0 };
+    let character = if pos.col > 0 { pos.col - 1 } else { 0 };
+
+    let start = Position::new(line, character);
+
+    let end = Position::new(line, character + 1);
+
+    Range::new(start, end)
+}
