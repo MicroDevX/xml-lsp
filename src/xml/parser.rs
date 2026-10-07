@@ -6,7 +6,7 @@ pub struct ParseResult<'a> {
     pub diagnostics: Vec<Diagnostic>,
 }
 
-pub fn parse_xml(text: &str) -> ParseResult {
+pub fn parse_xml(text: &str) -> ParseResult<'_> {
     match Document::parse(text) {
         Ok(doc) => ParseResult {
             document: Some(doc),
