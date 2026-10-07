@@ -21,3 +21,36 @@ pub fn parse_xml(text: &str) -> ParseResult {
         }
     }
 }
+
+fn build_diagnostic(err: XmlError) -> Diagnostic {
+    let pos = err.pos();
+    let range = create_lsp_range(pos);
+
+    let message = match err {
+        XmlError::UnexpectedCloseTag(expected, actual, _) => {
+            format!(
+                "Unexpected close tag: expected '{}', found '{}'",
+                expected, actual
+            )
+        }
+        XmlError::UnknownEntityReference(entity, _) => {
+            format!("Unknown entity reference: '&{};'", entity)
+        }
+        XmlError::DuplicatedAttribute(attr, _) => {
+            format!("Duplicated attribute: '{}'", attr)
+        }
+        _ => err.to_string(),
+    };
+
+    Diagnostic {
+        range,
+        severity: Some(DiagnosticSeverity::ERROR),
+        code: None,
+        code_description: None,
+        source: Some("xml-lsp".to_string()),
+        message,
+        related_information: None,
+        tags: None,
+        data: None,
+    }
+}
