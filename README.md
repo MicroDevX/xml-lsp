@@ -1,4 +1,4 @@
-# xml-lsp 🦀⚡
+# **xml-lsp**
 
 A lightweight, high-performance **XML Language Server Protocol (LSP)** implementation written entirely in **Rust**.
 
